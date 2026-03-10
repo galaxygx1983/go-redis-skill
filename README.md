@@ -11,10 +11,38 @@
 - ✅ Pipeline/事务/PubSub
 - ✅ Cluster/Sentinel 支持
 - ✅ 连接池管理
-- ✅ 性能优化
+- ✅ 性能优化与监控
 - ✅ OpenTelemetry 集成
 - ✅ 错误处理
-- ✅ 最佳实践
+- ✅ 实战场景模式（缓存、分布式锁、限流、会话、消息队列）
+- ✅ 框架集成（Gin、Wire）
+- ✅ 测试指南（miniredis）
+
+## 触发条件
+
+当用户需要：
+1. Go 项目集成 Redis
+2. 配置 Redis 连接池/集群/Sentinel
+3. 实现 Redis 缓存/分布式锁/限流
+4. Redis 性能调优和问题排查
+5. 使用 go-redis 库进行开发
+
+## 文件结构
+
+```
+go-redis-skill/
+├── SKILL.md              # 主技能文档（完整指南）
+├── README.md             # 本文件
+├── examples/
+│   ├── basic_usage.go    # 基础操作示例
+│   ├── connection_pool.go # 连接池管理
+│   ├── cluster_usage.go  # Cluster 使用
+│   ├── caching.go        # 缓存模式
+│   ├── distributed_lock.go # 分布式锁
+│   └── testing.go        # 测试示例
+└── references/
+    └── best-practices.md # 最佳实践
+```
 
 ## 快速开始
 
@@ -41,27 +69,22 @@ rdb.Set(ctx, "key", "value", 0)
 val, _ := rdb.Get(ctx, "key").Result()
 ```
 
-## 示例代码
+## 核心功能速查
 
-查看 `examples/` 目录：
-
-- **basic_usage.go** - 基础操作示例（字符串、Hash、List、Set、Sorted Set）
-- **connection_pool.go** - 连接池管理与并发访问
-- **cluster_usage.go** - Redis Cluster 使用
-
-## 核心功能
-
-### 数据类型
-
-| 类型 | 方法 | 示例 |
+| 功能 | 方法 | 示例 |
 |------|------|------|
-| String | Set, Get, MSet, MGet | `rdb.Set(ctx, "key", "value", 0)` |
+| 字符串 | Set, Get, MSet, MGet | `rdb.Set(ctx, "key", "value", 0)` |
 | Hash | HSet, HGet, HGetAll | `rdb.HSet(ctx, "hash", "field", "value")` |
 | List | LPush, RPop, LRange | `rdb.LPush(ctx, "list", "item")` |
 | Set | SAdd, SMembers, SInter | `rdb.SAdd(ctx, "set", "member")` |
 | Sorted Set | ZAdd, ZRange, ZRem | `rdb.ZAdd(ctx, "zset", redis.Z{Score: 1, Member: "m"})` |
+| Pipeline | Pipeline() | `pipe.Exec(ctx)` |
+| 事务 | Watch() | `rdb.Watch(ctx, keys...)` |
+| PubSub | Subscribe() | `rdb.Subscribe(ctx, channels...)` |
+| Streams | XAdd, XRead | `rdb.XAdd(ctx, &redis.XAddArgs{...})` |
+| Lua脚本 | NewScript() | `script.Run(ctx, rdb, keys, args)` |
 
-### 高级功能
+## 高级功能
 
 - **Pipeline**: `rdb.Pipeline()`
 - **事务**: `rdb.Watch(ctx, keys...)`
@@ -71,22 +94,22 @@ val, _ := rdb.Get(ctx, "key").Result()
 - **Cluster**: `redis.NewClusterClient()`
 - **Sentinel**: `redis.NewFailoverClient()`
 
-## 配置文件
+## 生产配置
 
 ```go
 rdb := redis.NewClient(&redis.Options{
     Addr:     "localhost:6379",
-    Password: "",
-    DB:       0,
-    
-    // 连接池
-    PoolSize:     100,
-    MinIdleConns: 10,
-    
+    PoolSize: runtime.GOMAXPROCS(0) * 10, // CPU核心数 * 10
+
     // 超时
     DialTimeout:  5 * time.Second,
     ReadTimeout:  3 * time.Second,
     WriteTimeout: 3 * time.Second,
+
+    // 连接池
+    MinIdleConns:    10,
+    ConnMaxLifetime: 30 * time.Minute,
+    ConnMaxIdleTime: 5 * time.Minute,
 })
 ```
 
@@ -122,12 +145,17 @@ redis.IsPermissionError(err) // 权限不足
 redis.IsOOMError(err)        // 内存不足
 ```
 
+## 故障排查
+
+详见 SKILL.md 中的"故障排查"章节。
+
 ## 生态系统
 
 - **分布式锁**: https://github.com/bsm/redislock
 - **缓存库**: https://github.com/go-redis/cache
 - **限流库**: https://github.com/go-redis/redis_rate
 - **OpenTelemetry**: `github.com/redis/go-redis/extra/redisotel/v9`
+- **测试**: https://github.com/alicebob/miniredis
 
 ## 相关资源
 
