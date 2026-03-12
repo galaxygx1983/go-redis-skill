@@ -1,12 +1,12 @@
 ---
 name: go-redis-skill
-description: Redis 官方 Go 客户端库开发指南。22k stars，BSD-2-Clause 许可。适用于：(1) Go 项目集成 Redis (2) 连接池/集群/Sentinel 配置 (3) Pipeline/事务/PubSub 开发 (4) 性能优化与监控 (5) OpenTelemetry 集成
+description: Redis官方Go客户端库(go-redis/v9)开发指南。当用户在Go项目中需要集成Redis、配置连接池、实现缓存、分布式锁、限流、消息队列、Pub/Sub、Pipeline、事务、Redis Cluster集群、Sentinel哨兵、Streams流、Lua脚本、OpenTelemetry监控等功能时使用。支持连接配置优化、性能调优、故障排查、测试mock等完整开发场景。22k stars，BSD-2-Clause许可。
 triggers:
-  - Go 项目需要集成 Redis
-  - 使用 go-redis 库
-  - 配置 Redis 连接池/集群/Sentinel
-  - 实现 Redis 缓存/分布式锁/限流
-  - Redis 性能调优和问题排查
+  - Go项目需要集成Redis
+  - 使用go-redis库
+  - 配置Redis连接池/集群/Sentinel
+  - 实现Redis缓存/分布式锁/限流
+  - Redis性能调优和问题排查
 ---
 
 # go-redis 开发指南
